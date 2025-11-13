@@ -23,4 +23,73 @@
       <legend>Step 1 — Host details</legend>
       <label>Resident Name <input name="resident_name" required></label>
       <div class="row">
-        <label>Student Num
+        <label>Student Number (7 digits) <input name="student_number" pattern="^[0-9]{7}$" required></label>
+        <label>Email (@student.sae.edu.au) <input type="email" name="student_email" required></label>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Step 2 — Visitor details</legend>
+      <label>Visitor Full Name <input name="visitor_full_name" required></label>
+      <label><input type="checkbox" name="repeat_visitor"> Repeat visitor</label>
+    </fieldset>
+
+    <fieldset>
+      <legend>Step 3 — Visit</legend>
+      <label>Entry date & time <input type="datetime-local" name="entry_at" required></label>
+      <p>Overnight stay is automatic (24h). To stay longer than 24h, submit another request. Max total 48h.</p>
+    </fieldset>
+
+    <fieldset>
+      <legend>Step 4 — Uploads</legend>
+      <label>Visitor headshot/selfie (JPG/PNG, ≤10MB) <input type="file" name="visitor_photo" accept=".jpg,.jpeg,.png" required></label>
+      <label>Government photo ID (front) (JPG/PNG/PDF, ≤10MB) <input type="file" name="id_front" accept=".jpg,.jpeg,.png,.pdf" required></label>
+    </fieldset>
+
+    <fieldset>
+      <legend>Step 5 — Declarations</legend>
+      <label><input type="checkbox" name="decl1" required> I am the resident and responsible/accountable for this visitor.</label>
+      <label><input type="checkbox" name="decl2" required> Visitor will comply with accommodation rules.</label>
+      <label><input type="checkbox" name="decl3" required> Information is true and I consent to ID verification & storage.</label>
+      <div class="banner">Unregistered or last-minute arrivals may be refused.</div>
+    </fieldset>
+
+    <button type="submit">Submit</button>
+  </form>
+
+  <div id="ok" class="hidden">
+    <h2>Submitted</h2>
+    <p>Your application has been received. Approval is required before entry.</p>
+    <p id="ref"></p>
+  </div>
+
+  <script>
+    const form = document.getElementById('form');
+    const ok = document.getElementById('ok');
+    const ref = document.getElementById('ref');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const fd = new FormData(form);
+      try {
+        const resp = await fetch('/api/submit', { method: 'POST', body: fd });
+        const data = await resp.json();
+        if (!resp.ok) throw new Error(data.error || 'Submit failed');
+        form.classList.add('hidden');
+        ok.classList.remove('hidden');
+        ref.textContent = 'Reference: ' + data.visit_id;
+      } catch (err) {
+        alert(err.message);
+      }
+    });
+
+    // Default entry time = next top of hour
+    const entry = document.querySelector('input[name="entry_at"]');
+    const now = new Date();
+    now.setMinutes(0,0,0);
+    now.setHours(now.getHours() + 2); // +2h lead time default
+    const pad = (n) => String(n).padStart(2,'0');
+    entry.value = `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())}T${pad(now.getHours())}:00`;
+  </script>
+</body>
+</html>
