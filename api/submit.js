@@ -24,7 +24,7 @@ export default async function handler(req, res) {
   const SUPABASE_URL = process.env.SUPABASE_URL;
   const SERVICE_ROLE = process.env.SUPABASE_SERVICE_ROLE_KEY;
   const BUCKET = process.env.SUPABASE_BUCKET || 'visitor-uploads';
-  const DOMAIN = process.env.ALLOWED_EMAIL_DOMAIN || '@student.sae.edu.au';
+  const DOMAIN = process.env.ALLOWED_EMAIL_DOMAIN || ''; // optional restriction
   const LEAD_H = parseInt(process.env.LEAD_TIME_HOURS || '2', 10);
 
   if (!SUPABASE_URL || !SERVICE_ROLE) {
@@ -48,8 +48,11 @@ export default async function handler(req, res) {
       if (!fields[k] || (Array.isArray(fields[k]) && !fields[k][0])) return bad(res, `Missing ${k}`);
     }
 
-    const email = String(fields['student_email']);
-    if (!email.endsWith(DOMAIN)) return bad(res, `Email must end with ${DOMAIN}`);
+        const email = String(fields['student_email']);
+    if (!email.includes('@')) return bad(res, 'Invalid email address');
+    if (DOMAIN && !email.endsWith(DOMAIN)) {
+      return bad(res, `Email must end with ${DOMAIN}`);
+    }
 
     const entryISO = toISO(String(fields['entry_at']));
     if (!entryISO) return bad(res, 'Invalid entry_at date');
