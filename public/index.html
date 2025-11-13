@@ -1,1 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SAE Visitor Registration</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 720px; margin: 24px auto; padding: 0 12px; }
+    fieldset { border: 1px solid #ddd; padding: 16px; margin-bottom: 16px; }
+    label { display:block; margin: 8px 0 4px; }
+    input, button { padding: 8px; width: 100%; box-sizing: border-box; }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .banner { background: #fff3cd; padding: 12px; border: 1px solid #ffeeba; margin-bottom: 16px; }
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+  <h1>Register a Visitor — SAE Accommodation</h1>
+  <p><strong>Unregistered or last-minute arrivals may be refused.</strong></p>
 
+  <form id="form">
+    <fieldset>
+      <legend>Step 1 — Host details</legend>
+      <label>Resident Name <input name="resident_name" required></label>
+      <div class="row">
+        <label>Student Num
